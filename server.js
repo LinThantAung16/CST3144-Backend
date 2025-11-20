@@ -36,6 +36,22 @@ app.use((req, res, next) => {
     next();
 });
 
+// static file middleware that returns lesson images
+app.use('/images', (req, res, next) => {
+    const filePath = path.join(__dirname, 'static', req.url);
+    
+    // Check if file exists
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            // File does not exist
+            return res.status(404).send('Image not found');
+        }
+        // File exists, send it
+        res.sendFile(filePath);
+    });
+});
+
+
 //Retrieve all lessons
 app.get('/lessons', async (req, res) => {
     try {
