@@ -68,6 +68,26 @@ app.get('/lessons', async (req, res) => {
     }
 });
 
+//POST Order
+const Order = require('./orderRequest');
+app.post('/orders', async (req, res) => {
+    try {
+        // Use the imported Order class
+        const orderModel = new Order(req.body);
+        
+        const result = await db.collection('orders').insertOne(orderModel.toDocument());
+
+        res.status(201).json({
+            message: "Order successfully added",
+            result: result
+        });
+
+    } catch (err) {
+        // Catch errors thrown by the Order class setter
+        res.status(400).json({ message: err.message });
+    }
+});
+
 // Start Server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
