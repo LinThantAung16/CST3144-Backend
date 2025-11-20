@@ -74,7 +74,7 @@ app.post('/orders', async (req, res) => {
     try {
         // Use the imported Order class
         const orderModel = new Order(req.body);
-        
+
         const result = await db.collection('orders').insertOne(orderModel.toDocument());
 
         res.status(201).json({
@@ -87,6 +87,24 @@ app.post('/orders', async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 });
+
+// Update available spaces
+app.put('/lessons/:id', async (req, res) => {
+    try {
+        const lessonId = new ObjectId(req.params.id);
+        const updateData = req.body; // Expecting { spaces: 4 }
+
+        const result = await db.collection('lessons').updateOne(
+            { _id: lessonId },
+            { $set: updateData }
+        );
+
+        res.json({ message: "Lesson updated", result });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 
 // Start Server
 const PORT = process.env.PORT || 3001;
