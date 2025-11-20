@@ -31,7 +31,21 @@ async function connectDB(){
 connectDB();
 
 
-
+//Retrieve all lessons
+app.get('/lessons', async (req, res) => {
+    try {
+        // Check if DB connection exists
+        if (!db) {
+            return res.status(503).json({ message: "Database not connected yet" });
+        }
+        
+        // Fetch data from the 'lessons' collection
+        const lessons = await db.collection('lessons').find({}).toArray();
+        res.json(lessons);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 // Start Server
 const PORT = process.env.PORT || 3001;
