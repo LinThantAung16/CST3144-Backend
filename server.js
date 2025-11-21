@@ -91,11 +91,11 @@ app.post('/orders', async (req, res) => {
 // Update available spaces
 app.put('/lessons/:id', async (req, res) => {
     try {
-        const lessonId = new ObjectId(req.params.id);
+        const lessonId = parseInt(req.params.id);
         const updateData = req.body; // Expecting { spaces: 4 }
 
         const result = await db.collection('lessons').updateOne(
-            { _id: lessonId },
+            { id: lessonId },
             { $set: updateData }
         );
 
@@ -105,6 +105,31 @@ app.put('/lessons/:id', async (req, res) => {
     }
 });
 
+// This handles the "Search as you type" requirement
+app.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q; // Get the search term ?q=math
+
+        if (!query) {
+            return res.status(400).json({ message: "Query parameter 'q' required" });
+        }
+
+        // Create a Regex for case-insensitive search
+        const regex = new RegExp(query, 'i');
+
+        // Search in 'subject' OR 'location'
+        const results = await db.collection('lessons').find({
+            $or: [
+                { subject: regex },
+                { location: regex }
+            ]
+        }).toArray();
+
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 // Start Server
 const PORT = process.env.PORT || 3001;
