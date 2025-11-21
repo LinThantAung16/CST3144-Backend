@@ -8,7 +8,7 @@ const app = express();
 
 // Configure Middleware
 app.use(express.json()); 
-
+app.use(cors());
 //db connection
 
 
