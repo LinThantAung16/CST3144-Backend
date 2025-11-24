@@ -77,6 +77,14 @@ app.post('/orders', async (req, res) => {
 
         const result = await db.collection('orders').insertOne(orderModel.toDocument());
 
+        for (const lessonId of orderModel.lessonIDs) {
+            
+            await db.collection('lessons').updateOne(
+                { id: lessonId }, 
+                { $inc: { spaces: -1 } } 
+            );
+        }
+
         res.status(201).json({
             message: "Order successfully added",
             result: result
