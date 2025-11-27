@@ -78,9 +78,9 @@ app.post('/orders', async (req, res) => {
         const result = await db.collection('orders').insertOne(orderModel.toDocument());
 
         for (const lessonId of orderModel.lessonIDs) {
-            
+            const id = parseInt(lessonId); 
             await db.collection('lessons').updateOne(
-                { id: lessonId }, 
+                { id: id }, 
                 { $inc: { spaces: -1 } } 
             );
         }
