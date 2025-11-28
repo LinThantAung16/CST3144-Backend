@@ -3,16 +3,16 @@ const { MongoClient, ObjectId } = require('mongodb'); // Native Driver
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const env = require('dotenv');
 // Initialize App
 const app = express();
-
+env.config();
 // Configure Middleware
 app.use(express.json()); 
 app.use(cors());
 //db connection
+const uri = process.env.MONGO_URI;
 
-
-const uri = "mongodb+srv://linthantag16_db_user:YwMQ5G71I1Vg4K5j@afterschoolhubcluster.unlkzs5.mongodb.net/?appName=AfterSchoolHubCluster";
 if(!uri){
     throw new Error("Error cannot connect");
 }
