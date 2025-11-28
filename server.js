@@ -125,12 +125,23 @@ app.get('/search', async (req, res) => {
         // Create a Regex for case-insensitive search
         const regex = new RegExp(query, 'i');
 
-        // Search in 'subject' OR 'location'
+        let searchConditions = [
+            { subject: regex },
+            { location: regex }
+        ];
+
+        // 3. Check if the query is a Number (for Price and Spaces)
+        const numberQuery = parseFloat(query);
+        
+        // If 'numberQuery' is a valid number (not NaN), add numeric checks
+        if (!isNaN(numberQuery)) {
+            searchConditions.push({ price: numberQuery });
+            searchConditions.push({ spaces: numberQuery });
+        }
+
+        // 4. Perform the search with $or
         const results = await db.collection('lessons').find({
-            $or: [
-                { subject: regex },
-                { location: regex }
-            ]
+            $or: searchConditions
         }).toArray();
 
         res.json(results);
