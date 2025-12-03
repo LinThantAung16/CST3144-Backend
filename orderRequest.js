@@ -33,6 +33,28 @@ class Order {
         this._phone = value;
     }
 
+    get spaces() {
+        return this._spaces;
+    }
+
+    set spaces(value) {
+        // 1. Check if it's a number
+        const num = Number(value);
+        
+        // 2. Check if valid number and Integer (no decimals)
+        if (isNaN(num) || !Number.isInteger(num)) {
+            throw new Error("Invalid Spaces: Must be a whole number");
+        }
+
+        // 3. Check if positive
+        if (num <= 0) {
+            throw new Error("Invalid Spaces: Must be at least 1");
+        }
+
+        this._spaces = num;
+    }
+
+
     // Convert Class back to simple JSON object for MongoDB
     toDocument() {
         return {
