@@ -30,6 +30,9 @@ class Order {
         if (!phoneRegex.test(value)) {
             throw new Error("Invalid Phone Number: Must be numbers only");
         }
+         if (value.length < 10) {
+            throw new Error("Invalid Phone Number: Must be at least 10 digits");
+        }
         this._phone = value;
     }
 
